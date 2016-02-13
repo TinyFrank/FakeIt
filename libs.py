@@ -10,6 +10,9 @@ class Loot(Sprite):
 		self.weight = weight
 		self.value = value
 		self.quality = quality
+		self.q_forbid=[]
+		self.m_forbid=[]
+		self.c_forbid=[]
 		#list of possible loot qualities
 		self.qualities = (	('ruined ',0.2), 
 							('busted ',0.4),
@@ -22,7 +25,8 @@ class Loot(Sprite):
 							('special edition ',2.0), 
 							('luxury ',5.0))
 		#list of possible 'hard' metals, for cooking and what have you					
-		self.ferros = ( 	('tin ',0.7,(172,182,192)), 
+		self.ferros = ( 	('tin ',0.6,(172,182,192)), 
+							('copper ',0.7,(255,12,0)),
 							('brass ',0.8,(218,165,32)), 
 							('iron ',0.9,(128,128,128)),		
 							('steel ',1.0,(192,192,192)),
@@ -63,9 +67,8 @@ class Loot(Sprite):
 		self.image_col.convert_alpha()
 		self.image_mat = pygame.image.load(M)
 		self.image_mat.convert_alpha()
-		pal = self.image_col.get_palette()
 		self.image_col.set_palette_at(1,self.color[1])
-		self.alpha = self.quality * 51
+		self.alpha = self.q_num * 51
 		if self.alpha > 255:
 			self.alpha = 255
 		self.image_col.set_alpha(self.alpha)
@@ -81,17 +84,18 @@ class Loot(Sprite):
 class Barbecue(Loot):
 	def __init__(self,settings,screen,weight,value, color=None ,quality = None):
 		super().__init__(settings, screen, weight, value, color, quality)
-		q_forbid=[0,3,8]
+		self.q_forbid=[0,3,8]
+		self.m_forbid=[]
+		self.c_forbid=[]
 		#if no quality was specified, select one randomly
 		if self.quality == None:
 			while True:
-				qt = randint(0,len(self.qualities)-1)
-				if qt not in q_forbid:
-					self.quality = qt
+				self.q_num = randint(0,len(self.qualities)-1)
+				if self.q_num not in self.q_forbid:
+					self.quality = self.qualities[self.q_num]
 					break
 				
 		#decide quality, material, value and color
-		self.qname = self.qualities[self.quality]
 		self.mat = self.ferros[randint(0,len(self.ferros)-1)]
 		self.color = self.colors[randint(0,len(self.colors)-1)]
 		
@@ -117,21 +121,19 @@ class Barbecue(Loot):
 		
 		#set value
 		self.value *= 20 #cos of a 'new, steel' bbq IRL, for balancing
-		self.value *= round(self.qname[1]*self.mat[1],2)
-		print(str(self.value) + ' ' + str(self.qname[1]) + ' ' + str(self.mat[1]))
+		self.value *= round(self.quality[1]*self.mat[1],2)
 		self.value *= round(self.val_x,2)
 			
 		#compose name
-		self.name = self.qname[0].title() + self.mat[0].title() + 'Barbecue '
+		self.name = self.quality[0].title() + self.mat[0].title() + 'Barbecue '
 		self.name = self.name + 'with ' + self.color[0].title() + 'paint.'
 		
 		
 		#debug terminal print
-		print(self.name + ' worth ' + str(round(self.value,2)))
+		print('\n' + self.name + ' worth ' + str(round(self.value,2)))
 		for i in self.parts:
 			print('\t..contains ' + str(i[2]) + ' ' + i[0], end = '')
 			print('made of ' + i[4][0] + i[1] + '.')
-		print('normal: ' + str(self.val_normal) + ' val_x: ' + str(self.val_x))
 		
 		
 		#compose image from source and alter based on qual/mat/color
