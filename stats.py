@@ -14,8 +14,11 @@ class Stats():
 		
 		#When to display and activate title card and menu
 		self.menu = -self.game_active
+		
+		self.inv = []
 	
 	def reset_stats(self):
 		"""Initialize statistics that can change during the game"""
 		self.score = 0
 		self.level = 1
+		self.inv = []

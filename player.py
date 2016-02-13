@@ -15,7 +15,7 @@ class Player(Sprite):
 		self.image = SpriteStripAnim('explode.png', (0,0,24,24), 8, 16777215, True, self.frames)
 		
 		self.rect = self.image.next().get_rect()
-		self.screen_rect = screen.get_rect()
+		self.screen_rect = self.screen.get_rect()
 		
 		self.rect.center = self.screen_rect.center		
 		

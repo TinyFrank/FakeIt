@@ -64,7 +64,7 @@ def run():
 	player = Player(settings, screen)
 	furniture = Group()
 	items = Group()
-	loot = Group()
+	loots = Group()
 	customers = Group()
 	
 	#Create clock to stabilize framerate
@@ -77,7 +77,7 @@ def run():
 	
 	while True:
 		clock.tick(100)
-		gf.check_events(settings, screen, stats, buttons)
+		gf.check_events(settings, screen, stats, buttons, loots)
 		gf.update_screen(settings,screen, stats, buttons, player)
 run()
 	

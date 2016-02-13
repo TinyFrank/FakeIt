@@ -3,13 +3,20 @@ from time import sleep
 from random import randint
 import json
 from player import Player
+from libs import *
 
 import pygame
 
-def check_keydown_events(event, settings, screen, stats):
+def check_keydown_events(event, settings, screen, stats, loots):
 	"""Respond to keypresses"""
 	if event.key == pygame.K_q:
 		sys.exit()
+	elif event.key == pygame.K_c:
+		barbecue = Barbecue(settings, screen, 2.0, 200,5) 
+		loots.add(barbecue)
+	elif event.key == pygame.K_d:
+		for i in loots:
+			print(i.name)
 		
 #def check_keyup_events(event,settings, screen, stats):
 	#"""Respond to keyreleases"""		
@@ -23,7 +30,6 @@ def check_buttons(settings, screen, stats, buttons, mouse_pos):
 		if contact:
 			clicked = button +1
 		
-	print(clicked)
 	if clicked == 1 and not stats.game_active:
 				
 		##Reset the game stats
@@ -41,13 +47,13 @@ def check_buttons(settings, screen, stats, buttons, mouse_pos):
 	if clicked == 7 and stats.game_active:
 		stats.game_active=False
 								
-def check_events(settings, screen, stats, buttons):
+def check_events(settings, screen, stats, buttons, loots):
 	"""Respond to keyboard and mouse events"""
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
 			sys.exit()
 		elif event.type == pygame.KEYDOWN:
-			check_keydown_events(event, settings, screen, stats)		
+			check_keydown_events(event, settings, screen, stats, loots)		
 		#elif event.type == pygame.KEYUP:
 			#check_keyup_events(event, settings, screen, stats)	
 		elif event.type == pygame.MOUSEBUTTONDOWN:
