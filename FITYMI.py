@@ -78,6 +78,6 @@ def run():
 	while True:
 		clock.tick(100)
 		gf.check_events(settings, screen, stats, buttons, loots)
-		gf.update_screen(settings,screen, stats, buttons, player)
+		gf.update_screen(settings,screen, stats, buttons, player, loots)
 run()
 	

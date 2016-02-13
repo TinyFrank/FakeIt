@@ -4,7 +4,6 @@ from random import randint
 import json
 from player import Player
 from libs import *
-
 import pygame
 
 def check_keydown_events(event, settings, screen, stats, loots):
@@ -12,7 +11,12 @@ def check_keydown_events(event, settings, screen, stats, loots):
 	if event.key == pygame.K_q:
 		sys.exit()
 	elif event.key == pygame.K_c:
-		barbecue = Barbecue(settings, screen, 2.0, 200,5) 
+		barbecue = Barbecue(settings, screen, 2.0, 200) 
+		x = randint(100,screen.get_width()-100)
+		y = randint(300,screen.get_height()-100)
+		barbecue.rect.x = x - (barbecue.rect.width/2)
+		barbecue.rect.y = y - (barbecue.rect.height/2)
+		print('You found a ' + barbecue.name + ' which is worth ' + str(round(barbecue.value,2)))
 		loots.add(barbecue)
 	elif event.key == pygame.K_d:
 		for i in loots:
@@ -60,7 +64,7 @@ def check_events(settings, screen, stats, buttons, loots):
 			mouse_pos = pygame.mouse.get_pos()
 			check_buttons(settings, screen, stats, buttons, mouse_pos)
 
-def update_screen(settings, screen, stats, buttons, player):
+def update_screen(settings, screen, stats, buttons, player, loots):
 	"""Update images on the screen and flip to the new screen"""
 
 	#Redraw the screen during each pass through the loop
@@ -72,6 +76,8 @@ def update_screen(settings, screen, stats, buttons, player):
 			buttons[button].draw_button()
 	
 	if stats.game_active:
+		for i in loots:
+			i.blitme()
 		player.blitme()
 		for button in range(2,7):
 			buttons[button].draw_button()
