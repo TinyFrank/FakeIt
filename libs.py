@@ -11,11 +11,16 @@ class Loot(Sprite):
 		self.value = value
 		self.quality = quality
 		#list of possible loot qualities
-		self.qualities = (	('ruined ',0.2), ('busted ',0.4),
-							('scratched ',0.6),('used ',0.75), 
-							('ordinary ',0.9),('new ',1.0),
-							('quality ',1.25), ('top notch ',1.5), 
-							('special edition ',2.0), ('luxury ',10.0))
+		self.qualities = (	('ruined ',0.2), 
+							('busted ',0.4),
+							('scratched ',0.6),
+							('used ',0.75), 
+							('ordinary ',0.9),
+							('new ',1.0),
+							('quality ',1.25), 
+							('top notch ',1.5), 
+							('special edition ',2.0), 
+							('luxury ',5.0))
 		#list of possible 'hard' metals, for cooking and what have you					
 		self.ferros = ( 	('tin ',0.7,(172,182,192)), 
 							('brass ',0.8,(218,165,32)), 
@@ -24,13 +29,20 @@ class Loot(Sprite):
 							('carbon steel ',1.5,(108,118,128)),
 							('stainless steel ',3.0,(176,196,222)))
 		#list of available paint colours					
-		self.colors = (		('red ',(200,30,30)), ('blue ',(30,30,200)),
-							('olive ',(128,128,0)), ('khaki ',(240,230,140)),
-							('dark green ',(0,100,0)),('lime green ',(50,205,50)),
-							('teal ',(0,128,128)),('indigo ',(75,0,130)),
-							('purple ',(128,0,128)), ('deep pink ',(255,20,147)),
-							('pink ', (255,192,203)), ('beige ',(245,245,220)),
-							('orange ', (255,165,0)), ('yellow ',(255,255,0)) )
+		self.colors = (		('red ',(200,30,30)), 				
+							('blue ',(30,30,200)),				
+							('olive ',(128,128,0)), 			
+							('khaki ',(240,230,140)),
+							('dark green ',(0,100,0)),
+							('lime green ',(50,205,50)),
+							('teal ',(0,128,128)),
+							('indigo ',(75,0,130)),
+							('purple ',(128,0,128)), 
+							('deep pink ',(255,20,147)),
+							('pink ', (255,192,203)), 
+							('beige ',(245,245,220)),
+							('orange ', (255,165,0)), 
+							('yellow ',(255,255,0)) )
 		
 	def set_images(self,D,L,M):
 		"""
@@ -69,11 +81,15 @@ class Loot(Sprite):
 class Barbecue(Loot):
 	def __init__(self,settings,screen,weight,value, color=None ,quality = None):
 		super().__init__(settings, screen, weight, value, color, quality)
-		
+		q_forbid=[0,3,8]
 		#if no quality was specified, select one randomly
 		if self.quality == None:
-			self.quality = randint(0,len(self.qualities)-1)
-		
+			while True:
+				qt = randint(0,len(self.qualities)-1)
+				if qt not in q_forbid:
+					self.quality = qt
+					break
+				
 		#decide quality, material, value and color
 		self.qname = self.qualities[self.quality]
 		self.mat = self.ferros[randint(0,len(self.ferros)-1)]
@@ -83,32 +99,45 @@ class Barbecue(Loot):
 		self.trim = self.mat
 		while self.trim == self.mat:
 			self.trim = self.ferros[randint(0,len(self.ferros)-1)]
-		self.parts = [ 	["legs ","rod ",3],
-						["grill ","mesh ",1],
-						["lid ","sheet ",1],
-						["base ","sheet ",1],
-						["screws ","chunk ",10] ]
+		self.parts = [ 	["legs ","rod ",3,2],
+						["grill ","mesh ",1,3],
+						["lid ","sheet ",1,4],
+						["base ","sheet ",1,4],
+						["screws ","chunk ",10,1] ]						
+		self.val_x = 0
+		self.val_normal = 0
 		for i in self.parts:
 			if randint(0,10) < 8:
 				i.append(self.mat)
 			else:
 				i.append(self.trim)
+			self.val_x += i[3]*i[4][1]
+			self.val_normal += i[3]
+		self.val_x /= self.val_normal
 		
 		#set value
-		self.value *= self.qname[1]*self.mat[1]
+		self.value *= 20 #cos of a 'new, steel' bbq IRL, for balancing
+		self.value *= round(self.qname[1]*self.mat[1],2)
+		print(str(self.value) + ' ' + str(self.qname[1]) + ' ' + str(self.mat[1]))
+		self.value *= round(self.val_x,2)
 			
 		#compose name
 		self.name = self.qname[0].title() + self.mat[0].title() + 'Barbecue '
 		self.name = self.name + 'with ' + self.color[0].title() + 'paint.'
 		
+		
 		#debug terminal print
 		print(self.name + ' worth ' + str(round(self.value,2)))
 		for i in self.parts:
 			print('\t..contains ' + str(i[2]) + ' ' + i[0], end = '')
-			print('made of ' + i[3][0] + i[1] + '.')
+			print('made of ' + i[4][0] + i[1] + '.')
+		print('normal: ' + str(self.val_normal) + ' val_x: ' + str(self.val_x))
+		
 		
 		#compose image from source and alter based on qual/mat/color
 		self.set_images('bbq_D.png','bbq_L.png','bbq_M.png')
+		
+		#create rects
 		self.rect = self.image_line.get_rect()
 		self.collide_rect = self.image_line.get_rect()
 		self.screen_rect = self.screen.get_rect()

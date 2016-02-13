@@ -21,4 +21,5 @@ class Stats():
 		"""Initialize statistics that can change during the game"""
 		self.score = 0
 		self.level = 1
+		self.loot_val = 1.0
 		self.inv = []
