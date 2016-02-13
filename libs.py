@@ -11,26 +11,26 @@ class Loot(Sprite):
 		self.value = value
 		self.quality = quality
 		#list of possible loot qualities
-		self.qualities = (	('ruined',0.2), ('busted',0.4),
-							('scratched',0.6),('used',0.75), 
-							('ordinary',0.9),('new',1.0),
-							('quality',1.25), ('top notch',1.5), 
-							('special edition',2.0), ('luxury',10.0))
+		self.qualities = (	('ruined ',0.2), ('busted ',0.4),
+							('scratched ',0.6),('used ',0.75), 
+							('ordinary ',0.9),('new ',1.0),
+							('quality ',1.25), ('top notch ',1.5), 
+							('special edition ',2.0), ('luxury ',10.0))
 		#list of possible 'hard' metals, for cooking and what have you					
-		self.ferros = ( 	('tin',0.7,(172,182,192)), 
-							('brass',0.8,(218,165,32)), 
-							('iron',0.9,(128,128,128)),		
-							('steel',1.0,(192,192,192)),
-							('carbon steel',1.5,(108,118,128)),
-							('stainless steel',3.0,(176,196,222)))
+		self.ferros = ( 	('tin ',0.7,(172,182,192)), 
+							('brass ',0.8,(218,165,32)), 
+							('iron ',0.9,(128,128,128)),		
+							('steel ',1.0,(192,192,192)),
+							('carbon steel ',1.5,(108,118,128)),
+							('stainless steel ',3.0,(176,196,222)))
 		#list of available paint colours					
-		self.colors = (		('red',(200,30,30)), ('blue',(30,30,200)),
-							('olive',(128,128,0)), ('khaki',(240,230,140)),
-							('dark green',(0,100,0)),('lime green',(50,205,50)),
-							('teal',(0,128,128)),('indigo',(75,0,130)),
-							('purple',(128,0,128)), ('deep pink',(255,20,147)),
-							('pink', (255,192,203)), ('beige',(245,245,220)),
-							('orange', (255,165,0)), ('yellow',(255,255,0)) )
+		self.colors = (		('red ',(200,30,30)), ('blue ',(30,30,200)),
+							('olive ',(128,128,0)), ('khaki ',(240,230,140)),
+							('dark green ',(0,100,0)),('lime green ',(50,205,50)),
+							('teal ',(0,128,128)),('indigo ',(75,0,130)),
+							('purple ',(128,0,128)), ('deep pink ',(255,20,147)),
+							('pink ', (255,192,203)), ('beige ',(245,245,220)),
+							('orange ', (255,165,0)), ('yellow ',(255,255,0)) )
 		
 	def set_images(self,D,L,M):
 		"""
@@ -77,12 +77,35 @@ class Barbecue(Loot):
 		#decide quality, material, value and color
 		self.qname = self.qualities[self.quality]
 		self.mat = self.ferros[randint(0,len(self.ferros)-1)]
-		self.value *= self.qname[1]*self.mat[1]
 		self.color = self.colors[randint(0,len(self.colors)-1)]
 		
+		#define component parts for disassembly
+		self.trim = self.mat
+		while self.trim == self.mat:
+			self.trim = self.ferros[randint(0,len(self.ferros)-1)]
+		self.parts = [ 	["legs ","rod ",3],
+						["grill ","mesh ",1],
+						["lid ","sheet ",1],
+						["base ","sheet ",1],
+						["screws ","chunk ",10] ]
+		for i in self.parts:
+			if randint(0,10) < 8:
+				i.append(self.mat)
+			else:
+				i.append(self.trim)
+		
+		#set value
+		self.value *= self.qname[1]*self.mat[1]
+			
 		#compose name
-		self.name = self.qname[0].title() + ' ' + self.mat[0].title() + ' Barbecue'
-		self.name = self.name + ' with ' + self.color[0].title() + ' paint.'
+		self.name = self.qname[0].title() + self.mat[0].title() + 'Barbecue '
+		self.name = self.name + 'with ' + self.color[0].title() + 'paint.'
+		
+		#debug terminal print
+		print(self.name + ' worth ' + str(round(self.value,2)))
+		for i in self.parts:
+			print('\t..contains ' + str(i[2]) + ' ' + i[0], end = '')
+			print('made of ' + i[3][0] + i[1] + '.')
 		
 		#compose image from source and alter based on qual/mat/color
 		self.set_images('bbq_D.png','bbq_L.png','bbq_M.png')
@@ -92,12 +115,6 @@ class Barbecue(Loot):
 		self.collide_rect.width *= .8		
 		self.collide_rect.height *= .8
 		
-		#define component parts for disassembly
-		self.parts = { 	("legs","rod","metal"),
-						("grill","mesh","metal"),
-						("lid","sheet","metal"),
-						("base","sheet","metal"),
-						("screws","chunk","metal") }
 		
 	def breakdown(self,inv):
 		pass
