@@ -24,7 +24,13 @@ class Loot(Sprite):
 							('carbon steel',1.5,(108,118,128)),
 							('stainless steel',3.0,(176,196,222)))
 		#list of available paint colours					
-		self.colors = (		('red',(200,30,30)), ('blue',(30,30,200)))
+		self.colors = (		('red',(200,30,30)), ('blue',(30,30,200)),
+							('olive',(128,128,0)), ('khaki',(240,230,140)),
+							('dark green',(0,100,0)),('lime green',(50,205,50)),
+							('teal',(0,128,128)),('indigo',(75,0,130)),
+							('purple',(128,0,128)), ('deep pink',(255,20,147)),
+							('pink', (255,192,203)), ('beige',(245,245,220)),
+							('orange', (255,165,0)), ('yellow',(255,255,0)) )
 		
 	def set_images(self,D,L,M):
 		"""
