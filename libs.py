@@ -82,7 +82,7 @@ class Barbecue(Loot):
 		
 		#compose name
 		self.name = self.qname[0].title() + ' ' + self.mat[0].title() + ' Barbecue'
-		self.name = self.name + ' with ' + self.color[0].title() + ' paint.'
+		self.name = self.name + ' with ' + self.color[0].title() + ' paint'
 		
 		#compose image from source and alter based on qual/mat/color
 		self.set_images('bbq_D.png','bbq_L.png','bbq_M.png')

@@ -16,7 +16,7 @@ def check_keydown_events(event, settings, screen, stats, loots):
 		y = randint(300,screen.get_height()-100)
 		barbecue.rect.x = x - (barbecue.rect.width/2)
 		barbecue.rect.y = y - (barbecue.rect.height/2)
-		print('You found a ' + barbecue.name + ' which is worth ' + str(round(barbecue.value,2)))
+		print(barbecue.name + ', worth ' + str(round(barbecue.value,2)))
 		loots.add(barbecue)
 	elif event.key == pygame.K_d:
 		for i in loots:
