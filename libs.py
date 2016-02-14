@@ -84,16 +84,20 @@ class Loot(Sprite):
 				self.dents -= 1
 			else:
 				self.image_col.set_palette_at(i,self.color[1])
-				
+		
+		#pick an alpha between 0 and 255 based on quality number		
 		self.alpha = (self.q_num * 51)-25
 		if self.alpha > 255:
 			self.alpha = 255
 		if self.alpha < 0:
 			self.alpha = 0
 		self.alpha = 255 - self.alpha
-		self.image_dirt.set_alpha(self.alpha)
 		
 	def blit_alpha(self,target, source, location, opacity):
+		"""
+		workaround to blit a pixel-alpha containing surface at an
+		opacity other than 100
+		"""
 		self.x = location[0]
 		self.y = location[1]
 		self.temp = pygame.Surface((source.get_width(), source.get_height())).convert()
@@ -132,24 +136,42 @@ class Barbecue(Loot):
 		self.mat = self.ferros[randint(0,len(self.ferros)-1)]
 		self.color = self.colors[randint(0,len(self.colors)-1)]
 		
-		#define component parts for disassembly
+		#define trim as a material
 		self.trim = self.mat
+		
+		#iterate over trim until it is a different material than mat
 		while self.trim == self.mat:
 			self.trim = self.ferros[randint(0,len(self.ferros)-1)]
+		
+		"""
+		self.parts contains the 'parts' into which the loot is broken
+		down. each has a name, a material form factor, and quantity, 
+		and a factor relating to how mcuh 'material' it contribues to 
+		the loot overall.
+		
+		As an example, there are 3 legs that contribute 2 to the overall
+		mass, while the 10 screws only contribute 1.
+		"""
 		self.parts = [ 	["legs ","rod ",3,2],
 						["grill ","mesh ",1,3],
 						["lid ","sheet ",1,4],
 						["base ","sheet ",1,4],
-						["screws ","chunk ",10,1] ]						
+						["screws ","chunk ",10,1] ]	
+						
 		self.val_x = 0
 		self.val_normal = 0
+		
+		#for each part...
 		for i in self.parts:
+			#20% change to change the material to trim material
 			if randint(0,10) < 8:
 				i.append(self.mat)
 			else:
 				i.append(self.trim)
 			self.val_x += i[3]*i[4][1]
 			self.val_normal += i[3]
+		
+		#create a final factor by taking the weighed average of the parts
 		self.val_x /= self.val_normal
 		
 		#set value
@@ -164,11 +186,11 @@ class Barbecue(Loot):
 		#compose image from source and alter based on qual/mat/color
 		self.set_images('bbq_D.png','bbq_L.png','bbq_M.png')
 		
-		#debug terminal print
-		print('\n' + self.name + ' worth ' + str(round(self.value,2)))
-		for i in self.parts:
-			print('\t..contains ' + str(i[2]) + ' ' + i[0], end = '')
-			print('made of ' + i[4][0] + i[1] + '. :' + str(self.alpha))
+		##debug terminal print
+		#print('\n' + self.name + ' worth ' + str(round(self.value,2)))
+		#for i in self.parts:
+			#print('\t..contains ' + str(i[2]) + ' ' + i[0], end = '')
+			#print('made of ' + i[4][0] + i[1] + '. :' + str(self.alpha))
 		
 		
 		

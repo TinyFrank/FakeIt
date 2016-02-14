@@ -62,8 +62,15 @@ def check_events(settings, screen, stats, buttons, loots):
 		elif event.type == pygame.MOUSEBUTTONDOWN:
 			mouse_pos = pygame.mouse.get_pos()
 			check_buttons(settings, screen, stats, buttons, mouse_pos)
-
-def update_screen(settings, screen, stats, buttons, player, loots):
+			if not stats.loot_pip:
+				for i in loots:
+					if i.rect.collidepoint(mouse_pos[0], mouse_pos[1]):
+						loot_pip(settings,screen,stats,i)
+						break
+			else:
+				stats.loot_pip = False
+def update_screen(	settings, screen, stats, buttons, ig_buttons, 
+					lp_buttons, player, loots):
 	"""Update images on the screen and flip to the new screen"""
 
 	#Redraw the screen during each pass through the loop
@@ -71,16 +78,27 @@ def update_screen(settings, screen, stats, buttons, player, loots):
 	
 	#Draw the menu button if the game is inactive
 	if not stats.game_active:
-		for button in range(0,2):
-			buttons[button].draw_button()
+		#for button in range(0,2):
+			#buttons[button].draw_button()
+		for i in buttons:
+			i.draw_button()
 	
 	if stats.game_active:
 		for i in loots:
 			i.blitme()
 		player.blitme()
-		for button in range(2,7):
-			buttons[button].draw_button()
+		#for button in range(2,7):
+			#buttons[button].draw_button()
+		for i in ig_buttons:
+			i.draw_button()
+		if stats.loot_pip:
+			for i in lp_buttons:
+				i.draw_button()
 			
 	#Make the most recently drawn screen visible
 	pygame.display.flip()
 
+def loot_pip(settings,screen,stats,loot):
+	"""Create the Loot PIP when a loot instance is interacted with"""
+	stats.loot_pip = True
+	

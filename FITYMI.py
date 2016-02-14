@@ -24,18 +24,20 @@ def run():
 	settings.screen_width = screen_setup[1]
 	settings.screen_height = screen_setup[2]
 	
+	#create variables for screen center
+	scx = settings.screen_width/2
+	scy = settings.screen_height/2
 	#Make Main Menu
 	buttons = []
 	play_button = Button(settings, screen, "NEW GAME",
-		settings.screen_width/2-100, 500,
-		300,75,(0,0,0),None)
+		scx-100, 500, 300,75,(0,0,0),None)
 	quit_button = Button(settings, screen, "QUIT",
-		settings.screen_width/2-100, 600,
-		300,75,(0,0,0),None)
+		scx-100, 600, 300,75,(0,0,0),None)
 	buttons.append(play_button)
 	buttons.append(quit_button)
 	
 	#Make Ingame Menu
+	ig_buttons = []
 	inv_button = Button(settings, screen, "INVENTORY",
 		settings.screen_width*.2-100, 100,
 		300,75,(0,0,0),None)
@@ -51,11 +53,29 @@ def run():
 	menu_button = Button(settings, screen, "MENU",
 		settings.screen_width*.8-100, 100,
 		300,75,(0,0,0),None)
-	buttons.append(inv_button)
-	buttons.append(craft_button)
-	buttons.append(build_button)
-	buttons.append(character_button)
-	buttons.append(menu_button)
+	ig_buttons.append(inv_button)
+	ig_buttons.append(craft_button)
+	ig_buttons.append(build_button)
+	ig_buttons.append(character_button)
+	ig_buttons.append(menu_button)
+	
+	#Make Loot PIP menu
+	lp_buttons = []
+	lptake_button = Button(settings, screen, "TAKE",
+		scx+25, scy-75, 200,50,(0,0,0),None,20)
+	lpdesc_button = Button(settings, screen, "DESCRIBE",
+		scx+25, scy+25, 200,50,(0,0,0),None,20)
+	lp_window = Button(settings, screen, "",
+		scx-250, scy-150, 500,300,(100,100,100),None)
+	lp_loot_window = Button(settings, screen, "",
+		scx-225, scy-125, 200,250,(180,180,180),None)
+	lp_loot = Button(settings, screen, "",
+		scx-215, scy-115, 180,230,(250,250,250),None)
+	lp_buttons.append(lp_window)
+	lp_buttons.append(lptake_button)
+	lp_buttons.append(lpdesc_button)
+	lp_buttons.append(lp_loot_window)
+	lp_buttons.append(lp_loot)
 	
 	#Create a stats instance
 	stats = Stats(settings)
@@ -78,6 +98,7 @@ def run():
 	while True:
 		clock.tick(100)
 		gf.check_events(settings, screen, stats, buttons, loots)
-		gf.update_screen(settings,screen, stats, buttons, player, loots)
+		gf.update_screen(	settings,screen, stats, buttons, ig_buttons, 
+							lp_buttons, player, loots)
 run()
 	

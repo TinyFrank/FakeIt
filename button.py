@@ -2,17 +2,18 @@ import pygame.font
 
 class Button():
 	
-	def __init__(self, settings, screen, msg,x,y,w,h,colour,image):
+	def __init__(self, settings, screen, msg,x,y,w,h,colour,image,fontsize=32):
 		"""Initialize button attributes"""
 		self.screen = screen
 		self.screen_rect = screen.get_rect()
 		self.settings = settings
+		self.fontsize = fontsize
 		
 		#set the dimensions and properties of the button
 		self.width, self.height = w, h
 		self.button_colour = colour
 		self.text_colour = (255,255,255)
-		self.font = pygame.font.Font('cour.ttf', 48)
+		self.font = pygame.font.Font('cour.ttf', self.fontsize)
 								
 		#Build the button's rect object and position it
 		self.rect = pygame.Rect(x,y,self.width,self.height)
