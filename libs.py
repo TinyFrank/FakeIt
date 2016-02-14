@@ -26,7 +26,7 @@ class Loot(Sprite):
 							('luxury ',5.0))
 		#list of possible 'hard' metals, for cooking and what have you					
 		self.ferros = ( 	('tin ',0.6,(172,182,192)), 
-							('copper ',0.7,(255,12,0)),
+							('copper ',0.7,(255,120,0)),
 							('brass ',0.8,(218,165,32)), 
 							('iron ',0.9,(128,128,128)),		
 							('steel ',1.0,(192,192,192)),
@@ -60,21 +60,38 @@ class Loot(Sprite):
 		the material layer below.
 		"""
 		self.image_dirt = pygame.image.load(D)
-		self.image_dirt.convert()
+		self.image_dirt.convert_alpha()
 		self.image_line = pygame.image.load(L)
 		self.image_line.convert_alpha()
 		self.image_col = pygame.image.load(M)
 		self.image_col.convert_alpha()
-		self.image_mat = pygame.image.load(M)
-		self.image_mat.convert_alpha()
-		self.image_col.set_palette_at(1,self.color[1])
+		
+		#num of colour layers in 'M' palette
+		self.layers = (len(self.image_col.get_palette())) 
+		
+		#if the quality is any worse than 'new' create some 'dents'
+		if self.q_num < 5:
+			self.dents = (int(self.layers/5) * self.q_num)+1
+			
+		#otherwise specify that there are no dents
+		else:
+			self.dents = 0
+		
+		#apply the dents by make paint fragments transparent	
+		for i in range(0,self.layers):
+			if self.dents:
+				self.image_col.set_palette_at(i,self.mat[2])
+				self.dents -= 1
+			else:
+				self.image_col.set_palette_at(i,self.color[1])
+				
 		self.alpha = (self.q_num * 51)-25
 		if self.alpha > 255:
 			self.alpha = 255
 		if self.alpha < 0:
 			self.alpha = 0
+		self.alpha = 255 - self.alpha
 		self.image_dirt.set_alpha(self.alpha)
-		self.image_mat.set_palette_at(1,self.mat[2])
 		
 	def blit_alpha(self,target, source, location, opacity):
 		self.x = location[0]
@@ -87,10 +104,8 @@ class Loot(Sprite):
         
 	def blitme(self):
 		"""Draw the ship at it's current location."""
-		self.screen.blit(self.image_mat,self.rect) #Material
 		self.screen.blit(self.image_col,self.rect) #Color (Paintjob)
 		self.screen.blit(self.image_line,self.rect) #Line art
-		#self.screen.blit(self.image_dirt,self.rect) #Dirt and Dents
 		self.blit_alpha(self.screen,self.image_dirt,self.rect,self.alpha)
 
 class Barbecue(Loot):
@@ -99,6 +114,7 @@ class Barbecue(Loot):
 		self.q_forbid=[]
 		self.m_forbid=[]
 		self.c_forbid=[]
+		
 		#if no quality was specified, select one randomly
 		if self.quality == None:
 			while True:
@@ -106,8 +122,13 @@ class Barbecue(Loot):
 				if self.q_num not in self.q_forbid:
 					self.quality = self.qualities[self.q_num]
 					break
-				
-		#decide quality, material, value and color
+					
+		#otherwise, save quality to q_num and reload quality from list			
+		else:
+			self.q_num = self.quality
+			self.quality = self.qualities[self.q_num]
+					
+		#decide material and color
 		self.mat = self.ferros[randint(0,len(self.ferros)-1)]
 		self.color = self.colors[randint(0,len(self.colors)-1)]
 		
