@@ -27,6 +27,7 @@ def run():
 	#create variables for screen center
 	scx = settings.screen_width/2
 	scy = settings.screen_height/2
+	
 	#Make Main Menu
 	buttons = []
 	play_button = Button(settings, screen, "NEW GAME",
@@ -61,16 +62,19 @@ def run():
 	
 	#Make Loot PIP menu
 	lp_buttons = []
+	lp_title = Button(settings, screen, "",
+		scx-250, scy-200, 500,50,(0,0,0),None,20)
 	lptake_button = Button(settings, screen, "TAKE",
-		scx+25, scy-75, 200,50,(0,0,0),None,20)
-	lpdesc_button = Button(settings, screen, "DESCRIBE",
-		scx+25, scy+25, 200,50,(0,0,0),None,20)
+		scx+25, scy-125, 200,50,(0,0,0),None,20)
+	lpdesc_button = Button(settings, screen, "",
+		scx+25, scy-50, 200,175,(0,0,0),None,10)
 	lp_window = Button(settings, screen, "",
 		scx-250, scy-150, 500,300,(100,100,100),None)
 	lp_loot_window = Button(settings, screen, "",
 		scx-225, scy-125, 200,250,(180,180,180),None)
 	lp_loot = Button(settings, screen, "",
 		scx-215, scy-115, 180,230,(250,250,250),None)
+	lp_buttons.append(lp_title)
 	lp_buttons.append(lp_window)
 	lp_buttons.append(lptake_button)
 	lp_buttons.append(lpdesc_button)
@@ -97,7 +101,8 @@ def run():
 	
 	while True:
 		clock.tick(100)
-		gf.check_events(settings, screen, stats, buttons, loots)
+		gf.check_events(	settings, screen, stats, buttons, 
+							ig_buttons, lp_buttons, loots)
 		gf.update_screen(	settings,screen, stats, buttons, ig_buttons, 
 							lp_buttons, player, loots)
 run()

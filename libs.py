@@ -9,6 +9,7 @@ class Loot(Sprite):
 		self.screen = screen
 		self.weight = weight
 		self.value = value
+		self.color = color
 		self.quality = quality
 		self.q_forbid=[]
 		self.m_forbid=[]
@@ -132,9 +133,12 @@ class Barbecue(Loot):
 			self.q_num = self.quality
 			self.quality = self.qualities[self.q_num]
 					
-		#decide material and color
+		#decide material
 		self.mat = self.ferros[randint(0,len(self.ferros)-1)]
-		self.color = self.colors[randint(0,len(self.colors)-1)]
+		
+		#decide color
+		if not self.color:
+			self.color = self.colors[randint(0,len(self.colors)-1)]
 		
 		#define trim as a material
 		self.trim = self.mat
@@ -182,7 +186,15 @@ class Barbecue(Loot):
 		#compose name
 		self.name = self.quality[0].title() + self.mat[0].title() + 'Barbecue '
 		self.name = self.name + 'with ' + self.color[0].title() + 'paint.'
-				
+		
+		#compose descriptive string for Loot PIP
+		self.desc = "Material:\t" + self.mat[0].upper()
+		self.desc += "\nTrim:\t\t" + self.trim[0].upper()
+		self.desc += "\nQuality:\t" + self.quality[0].upper()
+		self.desc += "\nColor:\t\t" + self.color[0].upper()
+		self.desc += "\nValue:\t\t$" + str(self.value).upper()
+		self.desc += "\nWeight:\t\t" + str(self.weight).upper() + 'kg'
+		print(self.desc)		
 		#compose image from source and alter based on qual/mat/color
 		self.set_images('bbq_D.png','bbq_L.png','bbq_M.png')
 		

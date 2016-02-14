@@ -5,6 +5,8 @@ import json
 from player import Player
 from libs import *
 import pygame
+import copy
+from button import Button
 
 def check_keydown_events(event, settings, screen, stats, loots):
 	"""Respond to keypresses"""
@@ -34,15 +36,7 @@ def check_buttons(settings, screen, stats, buttons, mouse_pos):
 			clicked = button +1
 		
 	if clicked == 1 and not stats.game_active:
-				
-		##Reset the game stats
-		#stats.reset_stats()
 		stats.game_active=True
-		## Reset the scoreboard images.
-		#sb.prep_score()
-		#sb.prep_high_score()
-		#sb.prep_level()
-		#sb.prep_ships()
 	
 	if clicked == 2 and not stats.game_active:
 		sys.exit()
@@ -50,8 +44,14 @@ def check_buttons(settings, screen, stats, buttons, mouse_pos):
 	if clicked == 7 and stats.game_active:
 		stats.game_active=False
 								
-def check_events(settings, screen, stats, buttons, loots):
+def check_events(	settings, screen, stats, buttons, ig_buttons, 
+					lp_buttons, loots):
 	"""Respond to keyboard and mouse events"""
+	
+	#create variables for screen center
+	scx = settings.screen_width/2
+	scy = settings.screen_height/2
+	
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
 			sys.exit()
@@ -65,9 +65,18 @@ def check_events(settings, screen, stats, buttons, loots):
 			if not stats.loot_pip:
 				for i in loots:
 					if i.rect.collidepoint(mouse_pos[0], mouse_pos[1]):
-						loot_pip(settings,screen,stats,i)
+						barbecue = Barbecue(settings, screen, i.weight, 
+							stats.loot_val,i.color,i.q_num)
+						lp_buttons.append(barbecue)
+						lp_buttons[0] = Button(settings, screen, i.name,
+							scx-250, scy-200, 500,50,(0,0,0),None,20)
+						lp_buttons[2] = Button(settings, screen, i.desc,
+							scx+25, scy-50, 200,175,(0,0,0),None,20)
+						lp_buttons[-1].rect.center = lp_buttons[4].rect.center 
+						stats.loot_pip = True
 						break
 			else:
+				del lp_buttons[-1]
 				stats.loot_pip = False
 def update_screen(	settings, screen, stats, buttons, ig_buttons, 
 					lp_buttons, player, loots):
@@ -93,12 +102,15 @@ def update_screen(	settings, screen, stats, buttons, ig_buttons,
 			i.draw_button()
 		if stats.loot_pip:
 			for i in lp_buttons:
-				i.draw_button()
-			
+				try:
+					i.draw_button()
+				except:	
+					i.blitme()
+					
 	#Make the most recently drawn screen visible
 	pygame.display.flip()
 
-def loot_pip(settings,screen,stats,loot):
-	"""Create the Loot PIP when a loot instance is interacted with"""
-	stats.loot_pip = True
+#def loot_pip(settings,screen,stats,loot,lp_buttons):
+	#"""Create the Loot PIP when a loot instance is interacted with"""
+	#stats.loot_pip = True
 	
