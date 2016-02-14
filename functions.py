@@ -11,12 +11,11 @@ def check_keydown_events(event, settings, screen, stats, loots):
 	if event.key == pygame.K_q:
 		sys.exit()
 	elif event.key == pygame.K_c:
-		barbecue = Barbecue(settings, screen, 2.0, 200) 
+		barbecue = Barbecue(settings, screen, 2.0, stats.loot_val) 
 		x = randint(100,screen.get_width()-100)
 		y = randint(300,screen.get_height()-100)
 		barbecue.rect.x = x - (barbecue.rect.width/2)
 		barbecue.rect.y = y - (barbecue.rect.height/2)
-		print(barbecue.name + ', worth ' + str(round(barbecue.value,2)))
 		loots.add(barbecue)
 	elif event.key == pygame.K_d:
 		for i in loots:
